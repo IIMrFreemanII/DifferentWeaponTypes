@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: AK-47
   m_EditorClassIdentifier: 
   weaponName: AK-47
-  damage: 12
-  projectileSpeed: 20
+  damage: 10
+  projectileSpeed: 5

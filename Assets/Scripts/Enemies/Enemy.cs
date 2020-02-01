@@ -1,30 +1,33 @@
 ﻿using UnityEngine;
 
-public class Enemy : MonoBehaviour, ITarget
+namespace Enemies
 {
-    [SerializeField] private float health = 100f;
-    
-    public float Health
+    public class Enemy : MonoBehaviour, ITarget
     {
-        get => health;
-        set => health = value;
-    }
+        [SerializeField] private float health = 100f;
 
-    public void TakeDamage(float damage)
-    {
-        print($"{gameObject.name} got {damage} damage.");
-        
-        Health -= damage;
-        if (Health <= 0)
+        public float Health
         {
-            Die();
+            get => health;
+            set => health = value;
         }
-        
-        print($"I have: {Health} health.");
-    }
 
-    public void Die()
-    {
-        Destroy(gameObject);
+        public void TakeDamage(float damage)
+        {
+            print($"{gameObject.name} got {damage} damage.");
+        
+            Health -= damage;
+            if (Health <= 0)
+            {
+                Die();
+            }
+        
+            print($"I have: {Health} health.");
+        }
+
+        public void Die()
+        {
+            Destroy(gameObject);
+        }
     }
 }

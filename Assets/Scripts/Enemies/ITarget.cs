@@ -1,6 +1,9 @@
-﻿public interface ITarget
+﻿namespace Enemies
 {
-    float Health { get; set; }
-    void TakeDamage(float damage);
-    void Die();
+    public interface ITarget
+    {
+        float Health { get; set; }
+        void TakeDamage(float damage);
+        void Die();
+    }
 }

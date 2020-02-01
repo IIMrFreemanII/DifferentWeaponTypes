@@ -1,40 +1,41 @@
 ﻿using UnityEngine;
 
-[RequireComponent(typeof(ILauncher))]
-public class RangeWeapon : Weapon
+namespace Weapons
 {
-    private CameraHandler _cameraHandler;
-    public Transform projectileSpawnPosition;
-    private ILauncher _launcher;
-
-    private void Start()
+    [RequireComponent(typeof(Launcher))]
+    public class RangeWeapon : Weapon
     {
-        _cameraHandler = FindObjectOfType<CameraHandler>();
-        projectileSpawnPosition = transform.Find("ProjectileSpawnPosition");
-        _launcher = GetComponent<ILauncher>();
-    }
+        private CameraHandler _cameraHandler;
+        private Launcher _launcher;
 
-    private void Update()
-    {
-        WeaponAiming();
-        Debug.DrawLine(transform.position, _cameraHandler.targetLook.position, Color.black);
-
-        if (Input.GetMouseButtonDown(0))
+        private void Start()
         {
-            Fire();
+            _cameraHandler = FindObjectOfType<CameraHandler>();
+            _launcher = GetComponent<Launcher>();
         }
-    }
 
-    private void WeaponAiming()
-    {
-        Vector3 direction = _cameraHandler.targetLook.position - transform.position;
-        direction.Normalize();
-        Quaternion lookRotation = Quaternion.LookRotation(direction);
-        transform.rotation = lookRotation;
-    }
+        private void Update()
+        {
+            WeaponAiming();
+            Debug.DrawLine(transform.position, _cameraHandler.targetLook.position, Color.black);
 
-    private void Fire()
-    {
-        _launcher.Launch(this);
+            if (Input.GetMouseButtonDown(0))
+            {
+                Fire();
+            }
+        }
+
+        private void WeaponAiming()
+        {
+            Vector3 direction = _cameraHandler.targetLook.position - transform.position;
+            direction.Normalize();
+            Quaternion lookRotation = Quaternion.LookRotation(direction);
+            transform.rotation = lookRotation;
+        }
+
+        private void Fire()
+        {
+            _launcher.Launch(this);
+        }
     }
 }

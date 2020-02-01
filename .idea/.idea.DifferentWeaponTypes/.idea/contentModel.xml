@@ -20,6 +20,11 @@
             <e p="ITarget.cs" t="Include" />
           </e>
           <e p="NonPhysicalCharacterMovement.cs" t="Include" />
+          <e p="ObjectPools" t="Include">
+            <e p="BulletPool.cs" t="Include" />
+            <e p="GenericObjectPool.cs" t="Include" />
+            <e p="MissilePool.cs" t="Include" />
+          </e>
           <e p="Properties" t="Include">
             <e p="CameraConfig.cs" t="Include" />
             <e p="CharacterStatus.cs" t="Include" />
@@ -27,10 +32,13 @@
           <e p="Weapons" t="Include">
             <e p="Bullet.cs" t="Include" />
             <e p="BulletLauncher.cs" t="Include" />
-            <e p="IHaveDamage.cs" t="Include" />
-            <e p="ILauncher.cs" t="Include" />
+            <e p="ICanDamage.cs" t="Include" />
+            <e p="Launcher.cs" t="Include" />
             <e p="MeleeWeapon.cs" t="Include" />
+            <e p="Missile.cs" t="Include" />
+            <e p="MissileLauncher.cs" t="Include" />
             <e p="Projectile.cs" t="Include" />
+            <e p="ProjectileSpawnPosition.cs" t="Include" />
             <e p="RangeWeapon.cs" t="Include" />
             <e p="Weapon.cs" t="Include" />
             <e p="WeaponProperties" t="Include">

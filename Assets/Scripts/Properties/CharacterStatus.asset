@@ -19,4 +19,4 @@ MonoBehaviour:
   horizontal: 0
   jump: 0
   speed: 7
-  jumpForce: 1.5
+  jumpForce: 20

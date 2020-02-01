@@ -1,12 +1,13 @@
-﻿using UnityEngine;
+﻿using ObjectPools;
 
-public class BulletLauncher : MonoBehaviour, ILauncher
+namespace Weapons
 {
-    [SerializeField] private Bullet bulletScript;
-    
-    public void Launch(RangeWeapon weapon)
+    public class BulletLauncher : Launcher
     {
-        Bullet bullet = Instantiate(bulletScript, weapon.projectileSpawnPosition.position, weapon.transform.rotation);
-        bullet.Launch(weapon.weaponProperties.damage, weapon.weaponProperties.projectileSpeed, weapon.projectileSpawnPosition.position, weapon.transform.rotation);
+        public override void Launch(RangeWeapon weapon)
+        {
+            Bullet bullet = BulletPool.Instance.Get();
+            bullet.Launch(weapon.weaponProperties.damage, weapon.weaponProperties.projectileSpeed, projectileSpawnTransform.position, weapon.transform.rotation);
+        }
     }
 }

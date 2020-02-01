@@ -1,63 +1,72 @@
-﻿using Extensions;
+﻿using System.Collections;
+using Enemies;
+using Extensions;
+using ObjectPools;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-[RequireComponent(typeof(CapsuleCollider))]
-public class Bullet : Projectile, IHaveDamage
+namespace Weapons
 {
-    private Rigidbody _rb;
-    private CapsuleCollider _collider;
-    public float Damage { get; set; }
-
-    private void Start()
+    [RequireComponent(typeof(Rigidbody))]
+    [RequireComponent(typeof(CapsuleCollider))]
+    public class Bullet : Projectile, ICanDamage
     {
-        _rb = GetComponent<Rigidbody>();
-        _collider = GetComponent<CapsuleCollider>();
+        private Rigidbody _rb;
+        private CapsuleCollider _collider;
+        public float Damage { get; set; }
+        private Vector3 _lastPosition;
+
+        private void Awake()
+        {
+            _rb = GetComponent<Rigidbody>();
+            _collider = GetComponent<CapsuleCollider>();
         
-        _collider.isTrigger = true;
-        _rb.isKinematic = true;
-    }
+            _rb.isKinematic = false;
+        }
 
-    public void Launch(float damage, float speed, Vector3 spawnPosition, Quaternion rotation, Transform parent = null)
-    {
-        this.speed = speed;
-        Damage = damage;
-        transform.position = spawnPosition;
-        transform.rotation = rotation;
-        transform.SetParent(parent);
-    }
+        public void Launch(float damage, float newSpeed, Vector3 spawnPosition, Quaternion rotation, Transform parent = null)
+        {
+            gameObject.SetActive(true);
+            speed = newSpeed;
+            Damage = damage;
+            transform.position = spawnPosition;
+            transform.rotation = rotation;
+            transform.SetParent(parent);
+            
+            _rb.isKinematic = false;
+            _rb.AddForce(transform.forward * speed, ForceMode.Impulse);
 
-    private void Update()
-    {
-        transform.Translate(Vector3.forward * (Time.deltaTime * speed));
-    }
+            StartCoroutine(DieWithDelay(5f));
+        }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        other.gameObject.HandleComponent<ITarget>(target =>
+        private void Update()
+        {
+            Vector3 currentPosition = transform.position + (transform.forward * 0.1f);
+            if (Physics.Linecast(_lastPosition, currentPosition, out RaycastHit hit, LayerMask.GetMask("Default", "Enemy")))
+            {
+                hit.collider.gameObject.HandleComponent<ITarget>(target => ApplyDamage(target, Damage));
+                print(hit.collider.gameObject.name);
+                Die();
+            }
+            
+            _lastPosition = transform.position;
+        }
+
+        public void ApplyDamage(ITarget target, float damage)
         {
             target.TakeDamage(Damage);
-            Die();
-        });
-        
-        Die();
-        // if (other.CompareTag("Enemy"))
-        // {
-        //     ITarget target = other.transform.GetComponent<ITarget>();
-        //     
-        //     if (target != null)
-        //     {
-        //         ApplyDamage(target, Damage);
-        //     }
-        // }
-        // else
-        // {
-        //     Die();
-        // }
-    }
+        }
 
-    private void Die()
-    {
-        Destroy(gameObject);
+        private void Die()
+        {
+            _rb.isKinematic = true;
+            BulletPool.Instance.ReturnToPool(this);
+        }
+        
+        private IEnumerator DieWithDelay(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            _rb.isKinematic = true;
+            BulletPool.Instance.ReturnToPool(this);
+        }
     }
 }
