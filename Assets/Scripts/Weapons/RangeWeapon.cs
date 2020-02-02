@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Weapons.WeaponProperties;
 
 namespace Weapons
 {
@@ -8,21 +9,29 @@ namespace Weapons
         private CameraHandler _cameraHandler;
         private Launcher _launcher;
 
-        private void Start()
+        public RangeWeaponProps rangeWeaponProps;
+
+        private void Awake()
         {
             _cameraHandler = FindObjectOfType<CameraHandler>();
             _launcher = GetComponent<Launcher>();
+            characterInput = transform.parent.parent.GetComponent<CharacterInput>();
+        }
+
+        private void OnEnable()
+        {
+            characterInput.Fire += Fire;
+        }
+
+        private void OnDisable()
+        {
+            characterInput.Fire -= Fire;
         }
 
         private void Update()
         {
             WeaponAiming();
             Debug.DrawLine(transform.position, _cameraHandler.targetLook.position, Color.black);
-
-            if (Input.GetMouseButtonDown(0))
-            {
-                Fire();
-            }
         }
 
         private void WeaponAiming()
@@ -33,7 +42,7 @@ namespace Weapons
             transform.rotation = lookRotation;
         }
 
-        private void Fire()
+        protected override void Fire()
         {
             _launcher.Launch(this);
         }

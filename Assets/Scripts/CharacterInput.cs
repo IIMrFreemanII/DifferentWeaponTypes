@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class CharacterInput : MonoBehaviour
 {
     public CharacterStatus characterStatus;
+    public event Action Fire;
 
     private void Update()
     {
@@ -11,6 +13,11 @@ public class CharacterInput : MonoBehaviour
         characterStatus.isSprint = Input.GetKey(KeyCode.LeftShift);
         characterStatus.isAiming = Input.GetMouseButton(1);
         characterStatus.jump = Input.GetAxis("Jump");
+        
+        if (Input.GetMouseButtonDown(0))
+        {
+            Fire?.Invoke();
+        }
     }
 
     private void OnApplicationQuit()

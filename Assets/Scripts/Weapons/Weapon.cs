@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 
-public abstract class Weapon : MonoBehaviour
+namespace Weapons
 {
-    public WeaponProps weaponProperties;
+    public abstract class Weapon : MonoBehaviour
+    {
+        protected CharacterInput characterInput;
+        protected abstract void Fire();
+    }
 }

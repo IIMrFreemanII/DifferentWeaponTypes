@@ -7,7 +7,7 @@ namespace Weapons
         public override void Launch(RangeWeapon weapon)
         {
             Bullet bullet = BulletPool.Instance.Get();
-            bullet.Launch(weapon.weaponProperties.damage, weapon.weaponProperties.projectileSpeed, projectileSpawnTransform.position, weapon.transform.rotation);
+            bullet.Launch(weapon.rangeWeaponProps.damage, weapon.rangeWeaponProps.projectileSpeed, projectileSpawnTransform.position, weapon.transform.rotation);
         }
     }
 }

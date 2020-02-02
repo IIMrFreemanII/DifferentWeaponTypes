@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System;
 using Enemies;
 using Extensions;
 using ObjectPools;
@@ -6,10 +7,23 @@ using UnityEngine;
 
 namespace Weapons
 {
+    [Serializable] public class MissileProps
+    {
+        [HideInInspector] public float damage;
+        [HideInInspector] public float speed;
+        public float timeToFly;
+        public float startForce;
+        public float acceleration;
+        public float rotationSpeed;
+        public float timeToDestroy;
+    }
     public class MissileLauncher : Launcher
     {
         [SerializeField] private Missile _missileToLaunch;
         [SerializeField] private Transform currentTarget;
+        [SerializeField] private float timeToReload = 0.3f;
+        [SerializeField] private float maxDistanceToHit = 25f;
+        [SerializeField] private MissileProps missileProps = null;
 
         private void Awake()
         {
@@ -48,17 +62,28 @@ namespace Weapons
             if (_missileToLaunch != null)
             {
                 Ray ray = new Ray(projectileSpawnTransform.position, projectileSpawnTransform.forward);
-                if (Physics.Raycast(ray, out RaycastHit hit, 25f))
+                if (Physics.Raycast(ray, out RaycastHit hit, maxDistanceToHit))
                 {
                     hit.collider.gameObject.HandleComponent<ITarget>(target => currentTarget = hit.transform );
                     print(hit.collider.name);
                 }
                 
-                _missileToLaunch.Launch(weapon.weaponProperties.damage, weapon.weaponProperties.projectileSpeed, currentTarget, ray);
+                MissileProps newMissileProps = new MissileProps
+                {
+                    acceleration = missileProps.acceleration,
+                    rotationSpeed = missileProps.rotationSpeed,
+                    damage = weapon.rangeWeaponProps.damage,
+                    speed = weapon.rangeWeaponProps.projectileSpeed,
+                    startForce = missileProps.startForce,
+                    timeToDestroy = missileProps.timeToDestroy,
+                    timeToFly = missileProps.timeToFly,
+                };
+                
+                _missileToLaunch.Launch(currentTarget, ray, newMissileProps);
                 
                 _missileToLaunch = null;
 
-                StartCoroutine(LoadMissileWithDelay(0.3f));
+                StartCoroutine(LoadMissileWithDelay(timeToReload));
             }
         }
     }

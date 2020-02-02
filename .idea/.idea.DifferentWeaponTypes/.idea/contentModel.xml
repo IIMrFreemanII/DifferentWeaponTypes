@@ -7,6 +7,10 @@
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
       <e p="Assets" t="Include">
         <e p="AutoTiling.cs" t="Include" />
+        <e p="Baseball bat Postapocalypse" t="Include">
+          <e p="Licence.txt" t="Include" />
+          <e p="Read me.txt" t="Include" />
+        </e>
         <e p="Extensions" t="Include">
           <e p="GameObjectExtensions.cs" t="Include" />
           <e p="TransformExtensions.cs" t="Include" />
@@ -42,6 +46,8 @@
             <e p="RangeWeapon.cs" t="Include" />
             <e p="Weapon.cs" t="Include" />
             <e p="WeaponProperties" t="Include">
+              <e p="MeleeWeaponProps.cs" t="Include" />
+              <e p="RangeWeaponProps.cs" t="Include" />
               <e p="WeaponProps.cs" t="Include" />
             </e>
           </e>

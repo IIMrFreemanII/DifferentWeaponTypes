@@ -13,8 +13,10 @@ namespace Weapons
         private MeshCollider _collider;
         private Transform _targetToHit;
         private Vector3 _directionToHit;
-
-        private float _timeToFly = 0.25f;
+        
+        private MissileProps _missileProps;
+        
+        private float _timeToFly;
         private float _timer;
         private bool _isAiming;
         
@@ -50,8 +52,10 @@ namespace Weapons
 
         private void MoveMissile()
         {
-            Vector3 rbSpeed = transform.forward * 30f;
-            _rb.velocity = Vector3.MoveTowards(_rb.velocity, rbSpeed, 1.5f);
+            // missile speed
+            Vector3 rbSpeed = transform.forward * _missileProps.speed;
+            // maxDistanceDelta = missile acceleration 
+            _rb.velocity = Vector3.MoveTowards(_rb.velocity, rbSpeed, _missileProps.acceleration);
         }
 
         private void MissileAiming(Transform target)
@@ -73,16 +77,20 @@ namespace Weapons
             
             direction.Normalize();
             Quaternion lookRotation = Quaternion.LookRotation(direction);
-            Quaternion smoothLookRotation = Quaternion.Lerp(_rb.rotation, lookRotation, Time.deltaTime * 8);
+            // rotation speed
+            Quaternion smoothLookRotation = Quaternion.Lerp(_rb.rotation, lookRotation, Time.deltaTime * _missileProps.rotationSpeed);
             _rb.MoveRotation(smoothLookRotation);
         }
 
-        public void Launch(float damage, float newSpeed, Transform target, Ray ray, Transform parent = null)
+        public void Launch(Transform target, Ray ray, MissileProps missileProps, Transform parent = null)
         {
-            speed = newSpeed;
-            Damage = damage;
+            _missileProps = missileProps;
+            speed = _missileProps.speed;
+            Damage = _missileProps.damage;
             transform.SetParent(parent);
             _targetToHit = target;
+            
+            _timeToFly = _missileProps.timeToFly;
 
             if (_targetToHit == null)
             {
@@ -93,9 +101,10 @@ namespace Weapons
             _isAiming = true;
             _rb.isKinematic = false;
             _collider.enabled = true;
-            _rb.AddForce(transform.forward * speed, ForceMode.Impulse);
+            _rb.AddForce(transform.forward * _missileProps.startForce, ForceMode.Impulse);
 
-            StartCoroutine(DieWithDelay(10f));
+            // time to destroy
+            StartCoroutine(DieWithDelay(_missileProps.timeToDestroy));
         }
 
         public void ApplyDamage(ITarget target, float damage)
@@ -110,6 +119,7 @@ namespace Weapons
             _directionToHit = Vector3.zero;
             _targetToHit = null;
             _isAiming = false;
+            _missileProps = null;
             
             _rb.isKinematic = true;
             _collider.enabled = false;
